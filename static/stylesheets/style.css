@@ -201,8 +201,18 @@ nav + .container {
   margin-top: -16px;
   opacity: 0.7;
   background-size: cover;
-  background-position: top center;
+  background-position: center;
   overflow:hidden;
+}
+
+#header-img{
+  position: absolute;
+  width: 100%;
+  margin: auto;
+  top: -9999px;
+  bottom: -9999px;
+  left: 0;
+  right: 0;
 }
 
 .full-width {
