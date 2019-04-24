@@ -34,7 +34,6 @@ connect_db(app)
 def add_user_to_g():
     """If we're logged in, add curr user to Flask global."""
 
-    print('@app.before_request')
     if CURR_USER_KEY in session:
         g.user = User.query.get(session[CURR_USER_KEY])
 
@@ -138,6 +137,19 @@ def add_like():
         db.session.commit()
 
     return redirect('/')
+
+@app.route('/likes')
+def render_likes_page():
+
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")    
+
+    liked_msg_id = [l.message_id for l in g.user.likes]
+
+    messages = Message.query.filter(Message.id.in_(liked_msg_id)).order_by(Message.timestamp.desc()).all()
+
+    return render_template('/users/likes.html', messages=messages, user=g.user)
 
 
 
@@ -247,12 +259,11 @@ def profile():
         user = User.authenticate(g.user.username, pw) # returns user or false
 
         if user:
-            user.username = form.username.data
-            user.email = form.email.data
-            user.bio = form.bio.data
-            user.location = form.location.data
-            user.image_url = form.image_url.data
-            user.header_image_url = form.header_image_url.data
+
+            for k, v in form.data.items():
+
+                if k != 'csrf_token' and k != 'password':
+                    setattr(user, k, v)
             db.session.commit()
             return redirect(f'/users/{g.user.id}')
         else:
