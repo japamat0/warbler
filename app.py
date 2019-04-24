@@ -3,6 +3,7 @@ import os
 from flask import Flask, render_template, request, flash, redirect, session, g
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
+from itertools import chain
 
 from forms import UserAddForm, LoginForm, MessageForm, EditUserForm
 from models import db, connect_db, User, Message
@@ -224,6 +225,8 @@ def profile():
         user = User.authenticate(user.username, pw)
 
         if user:
+            user.username = form.username.data
+            user.email = form.email.data
             user.bio = form.bio.data
             user.location = form.location.data
             user.image_url = form.image_url.data
@@ -233,7 +236,7 @@ def profile():
         else:
             form.password.errors = ["invalid password"]
 
-    return render_template('/users/edit.html', form=form)   
+    return render_template('/users/edit.html', form=form, user_id=u_id)   
 
 
 @app.route('/users/delete', methods=["POST"])
@@ -314,12 +317,13 @@ def homepage():
     """
 
     if g.user:
-        messages = (Message
-                    .query
-                    .order_by(Message.timestamp.desc())
-                    .limit(100)
-                    .all())
-        # import pdb; pdb.set_trace()
+
+        following_users_id = [u.id for u in g.user.following]
+        following_users_id.append(g.user.id)
+
+        messages = Message.query.filter(Message.user_id.in_(following_users_id)).order_by(Message.timestamp.desc()).all()
+
+    
         return render_template('home.html', messages=messages)
 
     else:
