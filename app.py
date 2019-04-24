@@ -4,7 +4,7 @@ from flask import Flask, render_template, request, flash, redirect, session, g
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 
-from forms import UserAddForm, LoginForm, MessageForm
+from forms import UserAddForm, LoginForm, MessageForm, EditUserForm
 from models import db, connect_db, User, Message
 
 CURR_USER_KEY = "curr_user"
@@ -18,7 +18,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = (
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = False
-app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = True
+app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', "it's a secret")
 toolbar = DebugToolbarExtension(app)
 
@@ -113,7 +113,9 @@ def login():
 def logout():
     """Handle logout of user."""
 
-    # IMPLEMENT THIS
+    session.pop(CURR_USER_KEY)
+    flash("you have been successfully logged out!")
+    return redirect('/')
 
 
 ##############################################################################
@@ -211,7 +213,27 @@ def stop_following(follow_id):
 def profile():
     """Update profile for current user."""
 
-    # IMPLEMENT THIS
+    #  show a form to edit profile
+    # import pdb; pdb.set_trace()
+    u_id = session[CURR_USER_KEY]
+    user = User.query.filter_by(id=u_id).first_or_404()
+    form = EditUserForm(obj=user)
+
+    if form.validate_on_submit():
+        pw = form.password.data
+        user = User.authenticate(user.username, pw)
+
+        if user:
+            user.bio = form.bio.data
+            user.location = form.location.data
+            user.image_url = form.image_url.data
+            user.header_image_url = form.header_image_url.data
+            db.session.commit()
+            return redirect(f'/users/{u_id}')
+        else:
+            form.password.errors = ["invalid password"]
+
+    return render_template('/users/edit.html', form=form)   
 
 
 @app.route('/users/delete', methods=["POST"])
@@ -297,7 +319,7 @@ def homepage():
                     .order_by(Message.timestamp.desc())
                     .limit(100)
                     .all())
-
+        # import pdb; pdb.set_trace()
         return render_template('home.html', messages=messages)
 
     else:
