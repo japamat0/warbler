@@ -6,7 +6,7 @@ from sqlalchemy.exc import IntegrityError
 from itertools import chain
 
 from forms import UserAddForm, LoginForm, MessageForm, EditUserForm
-from models import db, connect_db, User, Message
+from models import db, connect_db, User, Message, Like
 
 CURR_USER_KEY = "curr_user"
 
@@ -118,6 +118,24 @@ def logout():
     do_logout()
     flash("you have been successfully logged out!")
     return redirect('/')
+
+
+##############################################################################
+# Like routes
+
+@app.route('/like', methods=["POST"])
+def add_like():
+
+    msg_id = request.form.get('msg-info')
+    is_existing = Like.query.filter_by(message_id=msg_id, user_id=g.user.id).all()
+    
+    if len(is_existing) == 0:
+        like = Like(user_id=g.user.id, message_id=msg_id)
+        db.session.add(like)
+        db.session.commit()
+
+    return redirect('/')
+
 
 
 ##############################################################################
@@ -318,6 +336,8 @@ def homepage():
     """
 
     if g.user:
+
+        print(f"***********************\n{request.remote_addr}\n**********************")
 
         following_users_id = [u.id for u in g.user.following]
         following_users_id.append(g.user.id)
