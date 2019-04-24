@@ -21,6 +21,8 @@ class UserAddForm(FlaskForm):
 class EditUserForm(FlaskForm):
     """Form for editing user's profile."""
 
+    username = StringField('Username', validators=[DataRequired()])
+    email = StringField('E-mail', validators=[DataRequired(), Email()])
     bio = TextAreaField('Bio', validators=[Optional(), Length(max=300)])
     location = StringField('Location', validators=[Optional()])
     image_url = StringField('(Optional) Profile Image URL')
