@@ -127,11 +127,14 @@ def logout():
 def add_like():
 
     msg_id = request.form.get('msg-info')
-    is_existing = Like.query.filter_by(message_id=msg_id, user_id=g.user.id).all()
-    
-    if len(is_existing) == 0:
+    is_existing = Like.query.filter_by(message_id=msg_id, user_id=g.user.id).first()
+
+    if is_existing is None:
         like = Like(user_id=g.user.id, message_id=msg_id)
         db.session.add(like)
+        db.session.commit()
+    else:
+        db.session.delete(is_existing)
         db.session.commit()
 
     return redirect('/')
@@ -337,12 +340,13 @@ def homepage():
 
     if g.user:
 
-        print(f"***********************\n{request.remote_addr}\n**********************")
 
         following_users_id = [u.id for u in g.user.following]
         following_users_id.append(g.user.id)
 
         messages = Message.query.filter(Message.user_id.in_(following_users_id)).order_by(Message.timestamp.desc()).all()
+
+        # import pdb; pdb.set_trace()
 
         return render_template('home.html', messages=messages)
 
