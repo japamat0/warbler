@@ -34,6 +34,7 @@ connect_db(app)
 def add_user_to_g():
     """If we're logged in, add curr user to Flask global."""
 
+    print('@app.before_request')
     if CURR_USER_KEY in session:
         g.user = User.query.get(session[CURR_USER_KEY])
 
@@ -114,7 +115,7 @@ def login():
 def logout():
     """Handle logout of user."""
 
-    session.pop(CURR_USER_KEY)
+    do_logout()
     flash("you have been successfully logged out!")
     return redirect('/')
 
@@ -214,15 +215,15 @@ def stop_following(follow_id):
 def profile():
     """Update profile for current user."""
 
-    #  show a form to edit profile
-    # import pdb; pdb.set_trace()
-    u_id = session[CURR_USER_KEY]
-    user = User.query.filter_by(id=u_id).first_or_404()
-    form = EditUserForm(obj=user)
+    ## if user not logged in, redirect
+    if not g.user:
+        return redirect('/')
+
+    form = EditUserForm(obj=g.user)
 
     if form.validate_on_submit():
         pw = form.password.data
-        user = User.authenticate(user.username, pw)
+        user = User.authenticate(g.user.username, pw) # returns user or false
 
         if user:
             user.username = form.username.data
@@ -232,11 +233,11 @@ def profile():
             user.image_url = form.image_url.data
             user.header_image_url = form.header_image_url.data
             db.session.commit()
-            return redirect(f'/users/{u_id}')
+            return redirect(f'/users/{g.user.id}')
         else:
             form.password.errors = ["invalid password"]
 
-    return render_template('/users/edit.html', form=form, user_id=u_id)   
+    return render_template('/users/edit.html', form=form)   
 
 
 @app.route('/users/delete', methods=["POST"])
@@ -323,7 +324,6 @@ def homepage():
 
         messages = Message.query.filter(Message.user_id.in_(following_users_id)).order_by(Message.timestamp.desc()).all()
 
-    
         return render_template('home.html', messages=messages)
 
     else:
