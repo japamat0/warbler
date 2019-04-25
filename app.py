@@ -136,7 +136,7 @@ def add_like():
         db.session.delete(is_existing)
         db.session.commit()
 
-    return redirect('/')
+    return redirect(request.referrer)
 
 @app.route('/likes')
 def render_likes_page():
@@ -358,7 +358,7 @@ def homepage():
         messages = Message.query.filter(Message.user_id.in_(following_users_id)).order_by(Message.timestamp.desc()).all()
 
         # import pdb; pdb.set_trace()
-
+        # import pdb; pdb.set_trace()
         return render_template('home.html', messages=messages)
 
     else:

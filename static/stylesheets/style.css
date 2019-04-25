@@ -223,6 +223,30 @@ nav + .container {
   right: 50%;
 }
 
+.user-badge{
+  width: 20px;
+  height: 20px;
+}
+
+.avatar-div{
+  position: relative;
+}
+
+.user-avatar {
+  opacity: 1;
+	/* position: absolute; */
+	height: 100%;
+	width: 100%;
+	left: 0;
+  top: 0;
+  z-index: 3;
+}
+
+
+.user-avatar:hover {
+  opacity: .5;
+}
+
 .row.full-width {
   background-color: #fff;
   margin-top: -80px;
