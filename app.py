@@ -256,7 +256,7 @@ def profile():
 
     if form.validate_on_submit():
         pw = form.password.data
-        user = User.authenticate(g.user.username, pw) # returns user or false
+        user = User.authenticate(g.user.username, pw)  # returns user or false
 
         if user:
 
