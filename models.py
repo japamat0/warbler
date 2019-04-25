@@ -34,24 +34,15 @@ class Like(db.Model):
 
     user_id = db.Column(
         db.Integer,
-        db.ForeignKey('users.id', ondelete="cascade"),
+        db.ForeignKey('users.id'),
         primary_key=True,
     )
 
     message_id = db.Column(
         db.Integer,
-        db.ForeignKey('messages.id', ondelete="cascade"),
+        db.ForeignKey('messages.id'),
         primary_key=True,
     )
-
-    user = db.relationship(
-        "User",
-        backref="likes")
-
-    message = db.relationship(
-        "Message",
-        backref="likes")
-
 
 class User(db.Model):
     """User in the system."""
@@ -98,7 +89,17 @@ class User(db.Model):
         nullable=False,
     )
 
-    messages = db.relationship('Message', backref='user')
+    messages = db.relationship(
+        'Message',
+        backref='user',
+        cascade="all, delete"
+    )
+
+    likes = db.relationship(
+        'Like',
+        backref='user',
+        cascade="all, delete"
+    )
 
     followers = db.relationship(
         "User",
@@ -188,6 +189,15 @@ class Message(db.Model):
         db.ForeignKey('users.id', ondelete='CASCADE'),
         nullable=False,
     )
+
+    likes = db.relationship(
+        'Like',
+        backref='message',
+        cascade="all, delete"
+    )
+
+    def __repr__(self):
+        return f"<id: {self.id}\ntext: {self.text}\nuser_id: {self.user_id}>"
 
 
 def connect_db(app):

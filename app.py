@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, render_template, request, flash, redirect, session, g
+from flask import Flask, render_template, request, flash, redirect, session, g, abort
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 from itertools import chain
@@ -318,7 +318,7 @@ def messages_add():
 def messages_show(message_id):
     """Show a message."""
 
-    msg = Message.query.get(message_id)
+    msg = Message.query.get_or_404(message_id)
     return render_template('messages/show.html', message=msg)
 
 
@@ -326,11 +326,15 @@ def messages_show(message_id):
 def messages_destroy(message_id):
     """Delete a message."""
 
+    msg = Message.query.get(message_id)
+
+    if msg.user_id != g.user.id:
+        flash("Access unauthorized.", "danger")
+        return redirect('/401'), 401
     if not g.user:
         flash("Access unauthorized.", "danger")
         return redirect("/")
 
-    msg = Message.query.get(message_id)
     db.session.delete(msg)
     db.session.commit()
 
@@ -363,6 +367,13 @@ def homepage():
 
     else:
         return render_template('home-anon.html')
+
+
+@app.errorhandler(401)
+def show_401(error):
+    return 'oof', 401
+    
+    #  Response('<Why access is denied string goes here...>', 401, {'WWW-Authenticate':'Basic realm="Login Required"'})
 
 
 ##############################################################################
