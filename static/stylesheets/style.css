@@ -234,17 +234,10 @@ nav + .container {
 
 .user-avatar {
   opacity: 1;
-	/* position: absolute; */
 	height: 100%;
 	width: 100%;
 	left: 0;
   top: 0;
-  z-index: 3;
-}
-
-
-.user-avatar:hover {
-  opacity: .5;
 }
 
 .row.full-width {
