@@ -8,7 +8,7 @@
 import os
 from unittest import TestCase
 
-from models import db, connect_db, Message, User
+from models import db, connect_db, User, Message, Like, FollowersFollowee
 
 # BEFORE we import our app, let's set an environmental variable
 # to use a different database for tests (we need to do this
@@ -39,17 +39,59 @@ class MessageViewTestCase(TestCase):
     def setUp(self):
         """Create test client, add sample data."""
 
-        User.query.delete()
-        Message.query.delete()
+        # Create all tables
+        db.create_all()
+
+        # Add 6 test Users
+        for i in range(6):
+
+            u = User.signup(
+                email=f"test{i}@test.com",
+                username=f"testuser{i}",
+                password="HASHED_PASSWORD",
+                image_url="/static/images/default-pic.png"
+            )
+            db.session.add(u)
+        db.session.commit()
+
+        # Add 6 message
+        for i in range(6):
+
+            m = Message(
+                text=f"I love numer {i}",
+                user_id=i+1
+            )
+            db.session.add(m)
+        db.session.commit()
+
+        # Add 5 likes
+        for i in range(5):
+
+            like = Like(
+                user_id=i+1,
+                message_id=i+2
+            )
+            db.session.add(like)
+
+        # Add 5 follower/followee relationship
+
+        for i in range(5):
+
+            ff = FollowersFollowee(
+                followee_id=i+1,
+                follower_id=i+2
+            )
+            db.session.add(ff)
+
+        db.session.commit()
+        self.testuser = User.query.get(1)
 
         self.client = app.test_client()
 
-        self.testuser = User.signup(username="testuser",
-                                    email="test@test.com",
-                                    password="testuser",
-                                    image_url=None)
+    def tearDown(self):
 
-        db.session.commit()
+        db.session.close()
+        db.drop_all(bind=None)
 
     def test_add_message(self):
         """Can use add a message?"""
@@ -69,5 +111,35 @@ class MessageViewTestCase(TestCase):
             # Make sure it redirects
             self.assertEqual(resp.status_code, 302)
 
-            msg = Message.query.one()
+            # make sure that it can post a message
+            msg = Message.query.filter_by(id=7).first()
             self.assertEqual(msg.text, "Hello")
+
+    def test_delete_message(self):
+        """ can delete own and not others' messages """
+        # print(f"\n{msgs}\n")
+
+        with self.client as c:
+            with c.session_transaction() as sess:
+                sess[CURR_USER_KEY] = self.testuser.id
+
+        # test that we can delete our message
+        resp = c.post("/messages/1/delete")
+        self.assertEqual(resp.status_code, 302)
+
+        # test that we can no longer access aforementioned message
+        resp2 = c.get("/messages/1")
+        self.assertEqual(resp2.status_code, 404)
+
+
+        # test that we cannot delete other user's messgae
+        resp3 = c.post("/messages/2/delete")
+        self.assertEqual(resp3.status_code, 401)
+
+        # test that we can no longer access aforementioned message
+        resp2 = c.get("/messages/2")
+        self.assertEqual(resp2.status_code, 200)
+
+
+
+            
