@@ -196,6 +196,10 @@ class Message(db.Model):
         cascade="all, delete"
     )
 
+    def is_liked_by(self, user_id):
+        user_like = [like for like in self.likes if like.user_id == user_id]
+        return len(user_like) > 0
+
     def __repr__(self):
         return f"<id: {self.id}\ntext: {self.text}\nuser_id: {self.user_id}>"
 
