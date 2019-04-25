@@ -125,8 +125,9 @@ def logout():
 @app.route('/like', methods=["POST"])
 def add_like():
 
-    msg_id = request.form.get('msg-info')
+    msg_id = request.json.get('msg-id')
     is_existing = Like.query.filter_by(message_id=msg_id, user_id=g.user.id).first()
+    msg = Message.query.filter_by(id=msg_id).first_or_404()
 
     if is_existing is None:
         like = Like(user_id=g.user.id, message_id=msg_id)
@@ -136,7 +137,13 @@ def add_like():
         db.session.delete(is_existing)
         db.session.commit()
 
-    return redirect(request.referrer)
+    resp = {
+        "likes": len(msg.likes),
+        "is-liked": msg.is_liked_by(g.user.id),
+        "msgId": msg.id
+    }
+    return jsonify(resp)
+
 
 @app.route('/likes')
 def render_likes_page():
