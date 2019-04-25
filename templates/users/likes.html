@@ -3,36 +3,7 @@
 <div class="col-sm-6">
   <ul class="list-group" id="messages">
 
-    {% for msg in messages %}
-    <li class="list-group-item">
-
-      <a href="/users/{{ msg.user.id }}">
-        <img src="{{ msg.user.image_url }}" alt="" class="timeline-image">
-      </a>
-
-      <div class="message-area">
-        <a href="/users/{{ msg.user.id }}">@{{ msg.user.username }}</a>
-        <span class="text-muted">{{ msg.timestamp.strftime('%d %B %Y') }}</span>
-        <p>{{ msg.text }}</p>
-
-        <form action="/like" method="POST">
-          <button type="submit" name="msg-info" value="{{ msg.id }}" class='btn btn-link'>
-            <i class="far fa-heart"></i>
-          </button>
-          <span>{{ msg.likes|length }}</span>
-        </form>
-        <div>
-
-          {% for like in msg.likes %}
-          <a href="/users/{{ like.user.id }}">
-            <img src="{{ like.user.image_url }}" alt="" class="timeline-image user-badge">
-          </a>
-          {% endfor %}
-        </div>
-      </div>
-
-    </li>
-    {% endfor %}
+      {% include '_messages.html' %}
 
   </ul>
 </div>
