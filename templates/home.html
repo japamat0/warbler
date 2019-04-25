@@ -39,7 +39,7 @@
   <div class="col-lg-6 col-md-8 col-sm-12">
     <ul class="list-group" id="messages">
       {% for msg in messages %}
-      <li class="list-group-item">
+      <li id='msg-{{ msg.id }}' class="list-group-item">
 
         <a href="/users/{{ msg.user.id }}">
           <img src="{{ msg.user.image_url }}" alt="" class="timeline-image">
@@ -51,9 +51,9 @@
           <p>{{ msg.text }}</p>
 
           {% if g.user.id == msg.user_id %}
-          <form class='trash-btn' action="/messages/{{ msg.id }}/delete" method="POST">
+          <form class='trash-btn'>
             <button type="submit" class='btn btn-link'>
-              <i class="far fa-trash-alt"></i>
+              <i data-msg='{{ msg.id }}' class="far fa-trash-alt"></i>
             </button>
           </form>
           {% endif %}
