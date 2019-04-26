@@ -207,8 +207,8 @@ def show_following(user_id):
     if not g.user:
         flash("Access unauthorized.", "danger")
         return redirect("/")
-
-    return render_template('users/following.html', user=user, form=form)
+    user = User.query.get_or_404(user_id)
+    return render_template('users/following.html', user=user)
 
 
 @app.route('/users/<int:user_id>/followers')
@@ -353,7 +353,10 @@ def messages_show(message_id):
 
     if request.method == "POST":
         msg = Message.query.get(message_id)
+        # print(f'*****************\n{[c.serialize() for c in msg.comments]}\n*****************')
         serialized_msg = msg.serialize()
+        serialized_msg['comments'] = [c.serialize() for c in msg.comments]
+        print(f'*****************\n{serialized_msg}\n*****************')
         return jsonify(serialized_msg)
 
     msg = Message.query.get_or_404(message_id)

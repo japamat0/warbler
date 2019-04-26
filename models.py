@@ -4,6 +4,7 @@ from datetime import datetime
 
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
+from flask import jsonify
 
 bcrypt = Bcrypt()
 db = SQLAlchemy()
@@ -221,7 +222,7 @@ class Message(db.Model):
             'text': self.text,
             'user_id': self.user_id,
             'timestamp': self.timestamp,
-            'username':self.user.username
+            'username':self.user.username,
         }
 
 
@@ -267,7 +268,7 @@ class Comment(db.Model):
             'text': self.text,
             'user_id': self.user_id,
             'timestamp': self.timestamp,
-            'username':self.user.username
+            'username': self.user.username
         }
 
 

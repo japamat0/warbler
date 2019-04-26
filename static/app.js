@@ -22,6 +22,25 @@ $(function () {
         $('.modal-body').text(res.text)
         hiddenInput = `<input type="hidden" id="message-id" name="message-${res.id}" value="${res.id}">`
         $('#comment-form').append(hiddenInput)
+        console.log(res.comments);
+        for (let comment of res.comments) {
+            // console.log(comment)
+            formattedComment = makeHtml(comment)
+            $('#msg-comments').append(formattedComment)
+        }   
+    }
+
+    function makeHtml(obj) {
+        return `
+                <div class="card">
+
+                    <div class="card-body">
+                        <blockquote class="blockquote mb-0">
+                            <p>${obj.text}</p>
+                            <footer class="blockquote-footer">${obj.username} <cite title="Source Title">${obj.timestamp}</cite></footer>
+                        </blockquote>
+                    </div>
+                </div>`
     }
 
     function handleCommentSuccess(res) {
