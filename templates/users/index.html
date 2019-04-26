@@ -21,14 +21,17 @@
                 <p>@{{ user.username }}</p>
               </a>
 
-              {% if g.user %}
+              {% if g.user and user.id != g.user.id %}
               {% if g.user.is_following(user) %}
+
+
+
               <form method="POST" action="/users/follow/{{ user.id }}">
-                <button data-msg="{{ user.id }}" class="follow-btn btn btn-primary btn-sm">Unfollow</button>
+                <button id="user-{{ user.id }}" data-msg="{{ user.id }}" class="follow-btn btn btn-primary btn-sm">Unfollow</button>
               </form>
               {% else %}
               <form method="POST" action="/users/follow/{{ user.id }}">
-                <button data-msg="{{ user.id }}" class="follow-btn btn btn-outline-primary btn-sm">Follow</button>
+                <button id="user-{{ user.id }}" data-msg="{{ user.id }}" class="follow-btn btn btn-outline-primary btn-sm">Follow</button>
               </form>
               {% endif %}
               {% endif %}

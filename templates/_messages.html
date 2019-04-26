@@ -20,8 +20,8 @@
         </form>
         {% endif %}
 
-        <form action="/like" method="POST" class="like-btn">
-            <button type="submit" name="msg-info" value="{{ msg.id }}" class='btn btn-link'>
+        <form>
+            <button type="button" name="msg-info" value="{{ msg.id }}" class='btn like-btn btn-link'>
                 <i id="like-{{ msg.id }}" data-msg='{{ msg.id }}' class="
             {% if msg.is_liked_by(g.user.id) %}
             fas
@@ -32,6 +32,9 @@
 
             </button>
             <span id="{{ msg.id }}-num-likes">{{ msg.likes|length }}</span>
+            <button type="button" name="comment-btn" data-toggle="modal" data-target="#commentModalLong" class='btn comment-btn btn-link'>
+                <i id="comment-{{ msg.id }}" data-msg='{{ msg.id }}' class="far fa-comment"></i>
+            </button>
         </form>
         <div>
 

@@ -101,6 +101,12 @@ class User(db.Model):
         cascade="all, delete"
     )
 
+    comments = db.relationship(
+        'Comment',
+        backref='user',
+        cascade="all, delete"
+    )
+
     followers = db.relationship(
         "User",
         secondary="follows",
@@ -196,12 +202,73 @@ class Message(db.Model):
         cascade="all, delete"
     )
 
+    comments = db.relationship(
+        'Comment',
+        backref='message',
+        cascade="all, delete"
+    )
+
     def is_liked_by(self, user_id):
         user_like = [like for like in self.likes if like.user_id == user_id]
         return len(user_like) > 0
 
     def __repr__(self):
         return f"<id: {self.id}\ntext: {self.text}\nuser_id: {self.user_id}>"
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'text': self.text,
+            'user_id': self.user_id,
+            'timestamp': self.timestamp,
+            'username':self.user.username
+        }
+
+
+class Comment(db.Model):
+    """An individual message ("warble")."""
+
+    __tablename__ = 'comments'
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True,
+    )
+
+    text = db.Column(
+        db.String(140),
+        nullable=False,
+    )
+
+    timestamp = db.Column(
+        db.DateTime,
+        nullable=False,
+        default=datetime.utcnow(),
+    )
+
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey('users.id', ondelete='CASCADE'),
+        nullable=False,
+    )
+
+    message_id = db.Column(
+        db.Integer,
+        db.ForeignKey('messages.id', ondelete='CASCADE'),
+        nullable=False,
+    )
+
+    def __repr__(self):
+        return f"<id: {self.id}\ntext: {self.text}\nuser_id: {self.user_id}\nmessage_id: {self.message_id}>"
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'text': self.text,
+            'user_id': self.user_id,
+            'timestamp': self.timestamp,
+            'username':self.user.username
+        }
 
 
 def connect_db(app):

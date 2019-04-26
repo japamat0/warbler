@@ -9,6 +9,12 @@ class MessageForm(FlaskForm):
     text = TextAreaField('text', validators=[DataRequired()])
 
 
+class CommentForm(FlaskForm):
+    """Form for adding/editing messages."""
+
+    text = TextAreaField('text', validators=[DataRequired()])
+
+
 class UserAddForm(FlaskForm):
     """Form for adding users."""
 

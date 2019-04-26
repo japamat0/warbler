@@ -1,0 +1,38 @@
+{% block content %}
+
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#commentModalLong">
+    Launch demo modal
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="commentModalLong" tabindex="-1" role="dialog" aria-labelledby="commentModalLong"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="commentModalTitle">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+
+            <div class="comments-form">
+                <form class="p-3" id="comment-form">
+                    <textarea class="form-control" id="comment-text" rows="3"></textarea>
+                </form>
+              
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Cancel</button>
+                <button id="add-comment-btn" type="button" class="btn btn-primary btn-sm">Add Comment</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
