@@ -140,7 +140,8 @@ def add_like():
     resp = {
         "likes": len(msg.likes),
         "is-liked": msg.is_liked_by(g.user.id),
-        "msgId": msg.id
+        "msgId": msg.id,
+        "userImg": g.user.image_url
     }
     return jsonify(resp)
 
@@ -225,15 +226,23 @@ def users_followers(user_id):
 def add_follow(follow_id):
     """Add a follow for the currently-logged-in user."""
 
+    followee = User.query.get(follow_id)
     if not g.user:
         flash("Access unauthorized.", "danger")
         return redirect("/")
 
-    followee = User.query.get_or_404(follow_id)
-    g.user.following.append(followee)
+    if g.user.is_following(followee):
+        g.user.following.remove(followee)
+    else:
+        g.user.following.append(followee)
     db.session.commit()
 
-    return redirect(f"/users/{g.user.id}/following")
+    load = {
+        "followeeId": followee.id,
+        "isFollowing": g.user.is_following(followee)
+    }
+
+    return jsonify(load)
 
 
 @app.route('/users/stop-following/<int:follow_id>', methods=['POST'])
@@ -244,8 +253,6 @@ def stop_following(follow_id):
         flash("Access unauthorized.", "danger")
         return redirect("/")
 
-    followee = User.query.get(follow_id)
-    g.user.following.remove(followee)
     db.session.commit()
 
     return redirect(f"/users/{g.user.id}/following")
@@ -363,8 +370,6 @@ def homepage():
     """
 
     if g.user:
-
-
         following_users_id = [u.id for u in g.user.following]
         following_users_id.append(g.user.id)
 

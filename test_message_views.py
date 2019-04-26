@@ -125,7 +125,7 @@ class MessageViewTestCase(TestCase):
 
         # test that we can delete our message
         resp = c.post("/messages/1/delete")
-        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(resp.status_code, 200)
 
         # test that we can no longer access aforementioned message
         resp2 = c.get("/messages/1")

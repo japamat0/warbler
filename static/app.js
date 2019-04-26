@@ -8,6 +8,11 @@ $(function () {
         $(`#like-${res.msgId}`).toggleClass("fas far")
         $(`#${res.msgId}-num-likes`).text(`${res.likes}`)
     }
+    
+    function handleFollow(res) {
+        console.log(res);
+        
+    }
 
     $('[data-toggle="tooltip"]').tooltip()
 
@@ -28,14 +33,14 @@ $(function () {
 
     $('.like-btn').on('click', (e) => {
         e.preventDefault()
-
+        
         //get message_id
         msg_id = e.target.getAttribute('data-msg')
         
         data = {
             "msg-id": msg_id
         }
- 
+        
         //post request to like end point
         $.ajax({
             type: "POST",
@@ -43,6 +48,20 @@ $(function () {
             data: JSON.stringify(data),
             contentType: "application/json",
             success: handleLikeMessage
+        })
+    })
+    
+    $('.follow-btn').on('click', (e) => {
+        e.preventDefault()
+        
+        followee_id = e.target.getAttribute('data-msg')
+        console.log(e.target);
+        
+        //post request to like end point
+        $.ajax({
+            type: "POST",
+            url: `/users/follow/${followee_id}`,
+            success: handleFollow
         })
     })
 })
