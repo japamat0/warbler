@@ -35,6 +35,7 @@
             <button type="button" name="comment-btn" data-toggle="modal" data-target="#commentModalLong" class='btn comment-btn btn-link'>
                 <i id="comment-{{ msg.id }}" data-msg='{{ msg.id }}' class="far fa-comment"></i>
             </button>
+            <span id="{{ msg.id }}-num-comments">{{ msg.comments|length }}</span>
         </form>
         <div>
 

@@ -45,6 +45,7 @@ class Like(db.Model):
         primary_key=True,
     )
 
+
 class User(db.Model):
     """User in the system."""
 
@@ -222,7 +223,7 @@ class Message(db.Model):
             'text': self.text,
             'user_id': self.user_id,
             'timestamp': self.timestamp,
-            'username':self.user.username,
+            'username': self.user.username,
         }
 
 
@@ -268,7 +269,9 @@ class Comment(db.Model):
             'text': self.text,
             'user_id': self.user_id,
             'timestamp': self.timestamp,
-            'username': self.user.username
+            'username': self.user.username,
+            'msg_id': self.message_id,
+            'image_url': self.user.image_url
         }
 
 

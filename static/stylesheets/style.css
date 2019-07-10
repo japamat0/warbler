@@ -103,11 +103,6 @@ nav form.navbar-form {
   border: 2px solid #007bff;
 }
 
-/* on "onboarding" pages (signup & login), the navbar is
-   different: no search box, the logo is centered, and it has
-   a background color.
- */
-
 .onboarding > .navbar {
   background-image: url("/static/images/nav-bg.png");
   background-size: 100% 100%;
@@ -150,6 +145,45 @@ nav form.navbar-form {
 
 nav + .container {
   margin-bottom: 1rem;
+}
+
+/* ===================== Comment Modal */
+
+.user-cmnt-badge {
+  width: 40px;
+  height: 40px;
+}
+
+#comment-text {
+  margin-bottom: 0;
+}
+
+#comment-error {
+  height: 1.2rem;
+  text-align: center;
+  font-size: 0.8rem;
+  color: red;
+  opacity: 1;
+}
+
+.error-fade {
+  animation-delay: 2s;
+  animation-duration: 1s;
+  animation-name: fadeAway;
+}
+
+.empty-comments {
+  text-align: center;
+}
+
+@keyframes fadeAway {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
 }
 
 /* ===================== User profile */
@@ -205,7 +239,7 @@ nav + .container {
   overflow:hidden;
 }
 
-#header-img{
+#header-img {
   position: absolute;
   width: 100%;
   margin: auto;
@@ -223,7 +257,7 @@ nav + .container {
   right: 50%;
 }
 
-.user-badge{
+.user-badge {
   width: 20px;
   height: 20px;
 }

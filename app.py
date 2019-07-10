@@ -274,9 +274,7 @@ def profile():
         user = User.authenticate(g.user.username, pw)  # returns user or false
 
         if user:
-
             for k, v in form.data.items():
-
                 if k != 'csrf_token' and k != 'password':
                     setattr(user, k, v)
             db.session.commit()
@@ -311,14 +309,23 @@ def delete_user():
 def add_comment():
     """ add comment to message """
 
-    msg_id = request.json.get('msgId')
-    text = request.json.get('text')
+    try:
+        msg_id = request.json.get('msgId')
+        text = request.json.get('text')
 
-    comment = Comment(text=text, message_id=msg_id, user_id=g.user.id)
-    db.session.add(comment)
-    db.session.commit()
+        comment = Comment(text=text, message_id=msg_id, user_id=g.user.id)
 
-    return jsonify(comment.serialize())
+        db.session.add(comment)
+        db.session.commit()
+        return jsonify(comment.serialize())
+
+    except IntegrityError as e:
+        print('**************************************************************************\n')
+        print(e)
+        print('\n**************************************************************************')
+        raise IntegrityError('shit sucks')
+
+
 
 
 ##############################################################################
@@ -353,10 +360,9 @@ def messages_show(message_id):
 
     if request.method == "POST":
         msg = Message.query.get(message_id)
-        # print(f'*****************\n{[c.serialize() for c in msg.comments]}\n*****************')
         serialized_msg = msg.serialize()
+
         serialized_msg['comments'] = [c.serialize() for c in msg.comments]
-        print(f'*****************\n{serialized_msg}\n*****************')
         return jsonify(serialized_msg)
 
     msg = Message.query.get_or_404(message_id)

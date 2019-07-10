@@ -4,7 +4,7 @@
 <!-- Modal -->
 <div class="modal fade" id="commentModalLong" tabindex="-1" role="dialog" aria-labelledby="commentModalLong"
     aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog mt-5" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="commentModalTitle">Modal title</h5>
@@ -17,16 +17,18 @@
             </div>
 
             <div class="comments-form">
-                <form class="p-3" id="comment-form">
+                <form class="pt-3 px-3" id="comment-form">
                     <textarea class="form-control" id="comment-text" rows="3"></textarea>
                 </form>
+                <p id="comment-error"></p>
               
             </div>
 
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Cancel</button>
-                <button id="add-comment-btn" type="button" class="btn btn-primary btn-sm">Add Comment</button>
+            <div class="d-flex justify-content-end">
+                <button type="button" class="mr-3 btn btn-secondary btn-sm" data-dismiss="modal">Cancel</button>
+                <button id="add-comment-btn" type="button" class="mr-3 btn btn-primary btn-sm">Add Comment</button>
             </div>
+            <h4 class="text-center mt-3">Comments</h4>
             <div id="msg-comments">
 
             </div>
