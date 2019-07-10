@@ -20,10 +20,8 @@ $(function() {
     $('#commentModalTitle').text(res.username);
     $('.modal-body').text(res.text);
     $('#msg-comments').empty();
-    $('#comment-form').remove('#message-id');
+    $('#message-id').val(res.id);
     
-    const hiddenInput = `<input type="hidden" id="message-id" name="message-${res.id}" value="${res.id}">`;
-    $('#comment-form').append(hiddenInput);
     
     if (res.comments.length) {
       for (let comment of res.comments) {
@@ -137,6 +135,9 @@ $(function() {
   // button in modal to create comment
   $('#add-comment-btn').on('click', (e) => {
     e.preventDefault();
+
+    console.log($('#message-id').val());
+    
 
     let text = $('#comment-text').val();
     let data = {
