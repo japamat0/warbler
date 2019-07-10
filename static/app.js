@@ -60,6 +60,7 @@ $(function() {
 
   function handleCommentError(res) {
     let text = $('#comment-text').val();
+    
     let msg = text.length
       ? 'Comments must be less than 140 characters'
       : 'Comments cannot be blank';

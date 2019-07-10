@@ -265,6 +265,7 @@ def profile():
 
     ## if user not logged in, redirect
     if not g.user:
+        flash("You must be logged in to view this page","danger")
         return redirect('/')
 
     form = EditUserForm(obj=g.user)
@@ -323,8 +324,6 @@ def add_comment():
         return e
 
 
-
-
 ##############################################################################
 # Messages routes:
 
@@ -355,15 +354,20 @@ def messages_add():
 def messages_show(message_id):
     """Show a message."""
 
-    if request.method == "POST":
-        msg = Message.query.get(message_id)
-        serialized_msg = msg.serialize()
+    if g.user:
+        if request.method == "POST":
+            msg = Message.query.get(message_id)
+            serialized_msg = msg.serialize()
 
-        serialized_msg['comments'] = [c.serialize() for c in msg.comments]
-        return jsonify(serialized_msg)
+            serialized_msg['comments'] = [c.serialize() for c in msg.comments]
+            return jsonify(serialized_msg)
 
-    msg = Message.query.get_or_404(message_id)
-    return render_template('messages/show.html', message=msg)
+        msg = Message.query.get_or_404(message_id)
+        return render_template('messages/show.html', message=msg)
+    else:
+        flash ('You must be logged in to view this content', 'danger')
+        return render_template('home-anon.html')
+
 
 
 @app.route('/messages/<int:message_id>/delete', methods=["POST"])
@@ -381,7 +385,6 @@ def messages_destroy(message_id):
 
     db.session.delete(msg)
     db.session.commit()
-
 
     return jsonify(message_id)
 
@@ -405,8 +408,6 @@ def homepage():
 
         messages = Message.query.filter(Message.user_id.in_(following_users_id)).order_by(Message.timestamp.desc()).all()
 
-        # import pdb; pdb.set_trace()
-        # import pdb; pdb.set_trace()
         return render_template('home.html', messages=messages)
 
     else:
@@ -416,7 +417,7 @@ def homepage():
 @app.errorhandler(401)
 def show_401(error):
     return 'oof', 401
-    
+
     #  Response('<Why access is denied string goes here...>', 401, {'WWW-Authenticate':'Basic realm="Login Required"'})
 
 
