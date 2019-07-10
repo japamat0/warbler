@@ -20,7 +20,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = (
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = False
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', "it's a secret")
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', "default_secret_key")
 toolbar = DebugToolbarExtension(app)
 
 connect_db(app)
@@ -320,10 +320,7 @@ def add_comment():
         return jsonify(comment.serialize())
 
     except IntegrityError as e:
-        print('**************************************************************************\n')
-        print(e)
-        print('\n**************************************************************************')
-        raise IntegrityError('shit sucks')
+        return e
 
 
 
