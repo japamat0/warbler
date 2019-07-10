@@ -20,6 +20,7 @@ $(function() {
     $('#commentModalTitle').text(res.username);
     $('.modal-body').text(res.text);
     $('#msg-comments').empty();
+    $('#comment-form').remove('#message-id');
     
     const hiddenInput = `<input type="hidden" id="message-id" name="message-${res.id}" value="${res.id}">`;
     $('#comment-form').append(hiddenInput);
