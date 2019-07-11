@@ -599,8 +599,8 @@ p.card-bio {
 
 .trash-btn {
   position:absolute; 
-  top:10%;
-  right:3%;
+  top: 0;
+  right: 0;
 }
 
 .msg-li{
