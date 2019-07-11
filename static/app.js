@@ -123,7 +123,13 @@ $(function() {
   // button to populate message info
   $('.comment-btn').on('click', (e) => {
     e.preventDefault();
-    const msg_id = e.target.getAttribute('data-msg');
+    let msg_id;
+    
+    if (e.target.type === 'button') {
+      msg_id = $(e.target).children()[0].getAttribute('data-msg');
+    } else {
+      msg_id = msg_id = e.target.getAttribute('data-msg');
+    }
 
     $.ajax({
       type: 'POST',
