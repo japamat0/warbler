@@ -246,19 +246,6 @@ def add_follow(follow_id):
     return jsonify(load)
 
 
-@app.route('/users/stop-following/<int:follow_id>', methods=['POST'])
-def stop_following(follow_id):
-    """Have currently-logged-in-user stop following this user."""
-
-    if not g.user:
-        flash("Access unauthorized.", "danger")
-        return redirect("/")
-
-    db.session.commit()
-
-    return redirect(f"/users/{g.user.id}/following")
-
-
 @app.route('/users/profile', methods=["GET", "POST"])
 def profile():
     """Update profile for current user."""

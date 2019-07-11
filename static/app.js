@@ -123,8 +123,10 @@ $(function() {
   // button to populate message info
   $('.comment-btn').on('click', (e) => {
     e.preventDefault();
-    const msg_id = e.target.getAttribute('data-msg');
-
+    const msg_id = e.target.type === 'button'
+      ? $(e.target).children()[0].getAttribute('data-msg')
+      :  e.target.getAttribute('data-msg');
+    
     $.ajax({
       type: 'POST',
       url: `/messages/${msg_id}`,
@@ -135,9 +137,6 @@ $(function() {
   // button in modal to create comment
   $('#add-comment-btn').on('click', (e) => {
     e.preventDefault();
-
-    console.log($('#message-id').val());
-    
 
     let text = $('#comment-text').val();
     let data = {
