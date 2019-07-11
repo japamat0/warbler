@@ -107,6 +107,8 @@ def login():
 
         flash("Invalid credentials.", 'danger')
 
+    # if... request.isGUest or something, then authenticate as guest
+
     return render_template('users/login.html', form=form)
 
 
@@ -404,8 +406,6 @@ def homepage():
 @app.errorhandler(401)
 def show_401(error):
     return 'oof', 401
-
-    #  Response('<Why access is denied string goes here...>', 401, {'WWW-Authenticate':'Basic realm="Login Required"'})
 
 
 ##############################################################################
