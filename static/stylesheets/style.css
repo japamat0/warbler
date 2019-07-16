@@ -24,11 +24,16 @@ body.error-404 {
 
 .navbar {
   background-color: #fff;
-  height: 5rem;
+  height: 3rem;
   border-bottom: 1px solid rgba(0, 0, 0, 0.25);
   margin-bottom: 1rem;
   position: relative;
   z-index: 9999;
+}
+
+.nav-div {
+  width: 100vw;
+  background-color: #fff;
 }
 
 .navbar a {
@@ -365,6 +370,11 @@ nav + .container {
 
 /* ==================== User cards on follower/following pages */
 
+.follow-btn {
+  margin-top: 10px;
+  margin-right: 10px;
+}
+
 .user-card {
   width: 100%;
   padding-bottom: 100%;
@@ -423,6 +433,10 @@ nav + .container {
   margin-bottom: 20px;
 }
 
+.card {
+  margin-bottom: 10px;
+}
+
 .card-inner {
   display: flex;
   flex-direction: column;
@@ -442,7 +456,9 @@ nav + .container {
 }
 
 p.card-bio {
-  margin: 2em 10px 0;
+  height: 3rem;
+  overflow: hidden;
+  margin: 2em 10px 10px;
 }
 
 /* ============================ Signed out home */
